@@ -1,0 +1,22 @@
+version: '3.4'
+
+services:
+  opentrackapiclient:
+    image: ${DOCKER_REGISTRY-}opentrackapiclient
+    build:
+      context: .
+      dockerfile: OpenTrackApiClient/Dockerfile
+    ports:
+      - "5555:80"
+    environment:
+      - WEBHOOK_SECRET
+  ngrok:
+    image: wernight/ngrok
+    ports:
+      - "4040:4040"
+    environment:
+      - NGROK_PORT=opentrackapiclient:80
+      - NGROK_AUTH
+      - NGROK_DEBUG=1
+    depends_on:
+      - opentrackapiclient
